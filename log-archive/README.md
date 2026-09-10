@@ -80,4 +80,5 @@ The script checks for:
 ## Project Purpose
 
 This project demonstrates practical Linux administration and Bash scripting skills by automating a common system administration task: log archiving and management.
+https://roadmap.sh/projects/log-archive-tool
 
