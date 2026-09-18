@@ -1,0 +1,43 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: todo-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      php:
+        condition: service_started
+
+  php:
+    build: .
+    container_name: todo-php
+    environment:
+      DB_HOST: mysql
+      DB_NAME: todos
+      DB_USER: todo_user
+      DB_PASSWORD: todo_password
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    container_name: todo-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: todos
+      MYSQL_USER: todo_user
+      MYSQL_PASSWORD: todo_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "todo_user", "-ptodo_password"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql-data:
