@@ -1,6 +1,6 @@
 # Cloud Infrastructure & DevOps Portfolio
 
-## Hi, I'm Kolawole 👋
+## Hi, I'm Kolawole 
 
 I'm an aspiring **Cloud Infrastructure and DevOps Engineer** focused on building, automating, and operating reliable cloud and application infrastructure.
 
