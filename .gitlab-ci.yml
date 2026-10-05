@@ -1,6 +1,7 @@
 
 stages:
   - validate
+  - build
 
 validate-compose:
   stage: validate
@@ -41,3 +42,24 @@ validate-nginx:
     - docker run --rm --network ci-todo-network -v "$CI_PROJECT_DIR/consolidated-ec2/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro" --entrypoint nginx nginx:alpine -t
     - docker rm -f ci-rust-todo-api ci-todo-nginx ci-sqlite-todo-api
     - docker network rm ci-todo-network
+
+build-images:
+  stage: build
+  image: docker:24.0.5-cli
+  services:
+    - name: docker:24.0.5-dind
+      alias: docker
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    POSTGRES_DB: ci_todos
+    POSTGRES_USER: ci_user
+    POSTGRES_PASSWORD: ci_password
+    MYSQL_ROOT_PASSWORD: ci_root_password
+    MYSQL_DATABASE: ci_todos
+    MYSQL_USER: ci_user
+    MYSQL_PASSWORD: ci_password
+  script:
+    - cd consolidated-ec2
+    - docker compose build
