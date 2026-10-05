@@ -23,3 +23,21 @@ validate-compose:
     - cd consolidated-ec2
     - docker compose config
 
+validate-nginx:
+  stage: validate
+  image: docker:24.0.5-cli
+  services:
+    - name: docker:24.0.5-dind
+      alias: docker
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker network create ci-todo-network
+    - docker run -d --name ci-rust-todo-api --network ci-todo-network --network-alias rust-todo-api nginx:alpine
+    - docker run -d --name ci-todo-nginx --network ci-todo-network --network-alias todo-nginx nginx:alpine
+    - docker run -d --name ci-sqlite-todo-api --network ci-todo-network --network-alias sqlite-todo-api nginx:alpine
+    - docker run --rm --network ci-todo-network -v "$CI_PROJECT_DIR/consolidated-ec2/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro" --entrypoint nginx nginx:alpine -t
+    - docker rm -f ci-rust-todo-api ci-todo-nginx ci-sqlite-todo-api
+    - docker network rm ci-todo-network
