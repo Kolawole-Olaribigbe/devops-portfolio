@@ -1,9 +1,25 @@
-stages:
-  - test
 
-test-pipeline:
-  stage: test
+stages:
+  - validate
+
+validate-compose:
+  stage: validate
+  image: docker:24.0.5-cli
+  services:
+    - name: docker:24.0.5-dind
+      alias: docker
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    POSTGRES_DB: ci_todos
+    POSTGRES_USER: ci_user
+    POSTGRES_PASSWORD: ci_password
+    MYSQL_ROOT_PASSWORD: ci_root_password
+    MYSQL_DATABASE: ci_todos
+    MYSQL_USER: ci_user
+    MYSQL_PASSWORD: ci_password
   script:
-    - 'echo "GitLab CI/CD pipeline is working!"'
-    - 'echo "Repository: $CI_PROJECT_NAME"'
-    - 'echo "Branch: $CI_COMMIT_BRANCH"'
+    - cd consolidated-ec2
+    - docker compose config
+
