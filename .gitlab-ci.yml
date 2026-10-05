@@ -1,0 +1,9 @@
+stages:
+  - test
+
+test-pipeline:
+  stage: test
+  script:
+    - echo "GitLab CI/CD pipeline is working!"
+    - echo "Repository: $CI_PROJECT_NAME"
+    - echo "Branch: $CI_COMMIT_BRANCH"
