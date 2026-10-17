@@ -80,18 +80,19 @@ deploy-ec2:
     - chmod 600 ~/.ssh/known_hosts
   script:
     - |
+      set -eu
       ssh -i ~/.ssh/deploy_key \
         -o BatchMode=yes \
         -o StrictHostKeyChecking=yes \
-        "$EC2_USER@$EC2_HOST" '
-          set -eu
-          cd /home/ubuntu/devops-portfolio
-          git fetch origin main
-          git merge --ff-only origin/main
-          cd consolidated-ec2
-          docker compose config -q
-          docker compose up -d --build
-          docker compose ps
-        '
+        "${EC2_USER}@${EC2_HOST}" \
+        "set -eu
+         cd /home/ubuntu/devops-portfolio
+         git fetch origin main
+         git merge --ff-only origin/main
+         cd consolidated-ec2
+         docker compose config -q
+         docker compose up -d --build
+         docker compose ps"
+
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
