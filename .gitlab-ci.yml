@@ -2,6 +2,7 @@
 stages:
   - validate
   - build
+  - deploy
 
 validate-compose:
   stage: validate
@@ -63,3 +64,34 @@ build-images:
   script:
     - cd consolidated-ec2
     - docker compose build
+
+deploy-ec2:
+  stage: deploy
+  image: alpine:3.21
+  needs:
+    - build-images
+  before_script:
+    - apk add --no-cache openssh-client git
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - cp "$SSH_PRIVATE_KEY" ~/.ssh/deploy_key
+    - chmod 600 ~/.ssh/deploy_key
+    - cp "$SSH_KNOWN_HOSTS" ~/.ssh/known_hosts
+    - chmod 600 ~/.ssh/known_hosts
+  script:
+    - |
+      ssh -i ~/.ssh/deploy_key \
+        -o BatchMode=yes \
+        -o StrictHostKeyChecking=yes \
+        "$EC2_USER@$EC2_HOST" '
+          set -eu
+          cd /home/ubuntu/devops-portfolio
+          git fetch origin main
+          git merge --ff-only origin/main
+          cd consolidated-ec2
+          docker compose config -q
+          docker compose up -d --build
+          docker compose ps
+        '
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'

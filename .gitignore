@@ -1,0 +1,22 @@
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Terraform state and local configuration
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+terraform.tfvars.json
+
+# Logs and temporary files
+*.log
+*.tmp
