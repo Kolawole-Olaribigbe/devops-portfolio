@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-todo-service
+  namespace: kubernetes-todo
+spec:
+  type: ClusterIP
+  selector:
+    app: kubernetes-todo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

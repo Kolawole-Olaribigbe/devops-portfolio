@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubernetes-todo-config
+  namespace: kubernetes-todo
+data:
+  PORT: "3000"
+  DATA_DIR: "/data"

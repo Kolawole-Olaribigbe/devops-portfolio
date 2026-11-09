@@ -1,0 +1,13 @@
+# Node.js dependencies
+node_modules/
+
+# Runtime application data
+data/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Kubernetes Secret manifest
+k8s/secrets.yaml
