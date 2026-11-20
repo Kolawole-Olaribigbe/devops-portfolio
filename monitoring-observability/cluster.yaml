@@ -11,16 +11,16 @@ vpc:
   subnets:
     public:
       us-east-1a:
-        id: subnet-0620c43a1d668fb48
+        id: subnet-REPLACE_WITH_PUBLIC_SUBNET_A
       us-east-1b:
-        id: subnet-038eb74b40b73064e
+        id: subnet-REPLACE_WITH_PUBLIC_SUBNET_B
 
   clusterEndpoints:
     publicAccess: true
     privateAccess: false
 
   publicAccessCIDRs:
-    - 102.67.1.61/32
+    - YOUR_PUBLIC_IP/32
 
 managedNodeGroups:
   - name: monitoring-workers
